@@ -43,48 +43,88 @@ def home():
 
 @app.route("/statistics")
 def statistics():
-
     connection = get_connection()
     cursor = connection.cursor()
 
-    #Total number of catches
-    cursor.execute("SELECT COUNT(*) AS total FROM catches")
+    # Total number of catches
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM catches
+    """)
     total_catches = cursor.fetchone()["total"]
 
-    #Number of different species
-    cursor.execute("SELECT COUNT(DISTINCT species) AS species_count FROM catches")
-    species_count = cursor.fetchone()["average_weight"]
-
-    #Biggest fish
+    # Number of different fish species
     cursor.execute("""
-        SELECT *
+        SELECT COUNT(DISTINCT species) AS species_count
+        FROM catches
+        WHERE species IS NOT NULL
+          AND species <> ''
+    """)
+    species_count = cursor.fetchone()["species_count"]
+
+    # Average fish weight
+    cursor.execute("""
+        SELECT AVG(weight) AS average_weight
+        FROM catches
+        WHERE weight IS NOT NULL
+    """)
+    average_weight = cursor.fetchone()["average_weight"]
+
+    # Heaviest fish
+    cursor.execute("""
+        SELECT species, weight
         FROM catches
         WHERE weight IS NOT NULL
         ORDER BY weight DESC
         LIMIT 1
     """)
+    biggest_fish = cursor.fetchone()
+
+    # Number of catches for each species
+    cursor.execute("""
+        SELECT species, COUNT(*) AS count
+        FROM catches
+        WHERE species IS NOT NULL
+          AND species <> ''
+        GROUP BY species
+        ORDER BY count DESC, species ASC
+    """)
     species_stats = cursor.fetchall()
 
-    #Number of catches in each weather condition
+    # Number of catches at each location
+    cursor.execute("""
+        SELECT location, COUNT(*) AS count
+        FROM catches
+        WHERE location IS NOT NULL
+          AND location <> ''
+        GROUP BY location
+        ORDER BY count DESC, location ASC
+    """)
+    location_stats = cursor.fetchall()
+
+    # Number of catches in each weather condition
     cursor.execute("""
         SELECT weather, COUNT(*) AS count
         FROM catches
+        WHERE weather IS NOT NULL
+          AND weather <> ''
         GROUP BY weather
-        ORDER BY count DESC
+        ORDER BY count DESC, weather ASC
     """)
     weather_stats = cursor.fetchall()
 
+    cursor.close()
     connection.close()
-
 
     return render_template(
         "statistics.html",
-        total_catches = total_catches,
-        species_count = species_count,
-        average_weight = average_weight,
-        biggest_fish = biggest_fish,
-        species_stats = species_stats,
-        weather_stats = weather_stats
+        total_catches=total_catches,
+        species_count=species_count,
+        average_weight=average_weight,
+        biggest_fish=biggest_fish,
+        species_stats=species_stats,
+        location_stats=location_stats,
+        weather_stats=weather_stats
     )
 
 
