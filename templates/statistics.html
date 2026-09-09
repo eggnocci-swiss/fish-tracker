@@ -1,20 +1,141 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>STATISTICS PAGE!!!</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
+ <head>
+    <title>STATISTICS PAGE!!!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-    <body>
-        <p>this is where i will put all your fun statistics</p>
+<body>
+    <div class="header">
+        <h1>Fish Statistics</h1>
+        <p>Here is where I put all ur fun statistics yay!</p>
+    </div>
 
-        <br>
+    <!---Main Statistics-->
 
-         <a href="/">
-            <button>Back to home</button>
-        </a>
-    </body>
+    <div class="stats-container">
+
+        <div class="stat-card">
+            <h2>🎣</h2>
+            <h3>Total Catches</h3>
+            <p>{{ total_catches }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>🐟</h2>
+            <h3>Different Species</h3>
+            <p>{{ species_count }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>⚖️</h2>
+            <h3>Average Weight</h3>
+
+            {% if average_weight %}
+                <p>{{ "%.2f"|format(average_weight) }} kg</p>
+            {% else %}
+                <p>-</p>
+            {% endif %}
+        </div>
+
+        <div class="stat-card">
+            <h2>🏆</h2>
+            <h3>Biggest Fish!!</h3>
+
+            {% if biggest_fish %}
+                <p>{{ biggest_fish["weight"] }} kg</p>
+                <small>{{ biggest_fish["species"] }}</small>
+            {% else %}
+                <p>-</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Species -->
+
+    <div class="statistics-section">
+
+        <h2>Catches by Species</h2>
+
+        <table>
+
+            <tr>
+                <th>Species</th>
+                <th>Catches</th>
+            </tr>
+
+            {% for species in species_stats %}
+
+            <tr>
+                <td>{{ species["species"] }}</td>
+                <td>{{ species["count"] }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+        <!-- Locations -->
+
+    <div class="statistics-section">
+
+        <h2>Catches by Location</h2>
+
+        <table>
+
+            <tr>
+                <th>Location</th>
+                <th>Catches</th>
+            </tr>
+
+            {% for location in location_stats %}
+
+            <tr>
+                <td>{{ location["location"] }}</td>
+                <td>{{ location["count"] }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
 
 
+    <!-- Weather -->
+
+    <div class="statistics-section">
+
+        <h2>Catches by Weather</h2>
+
+        <table>
+
+            <tr>
+                <th>Weather</th>
+                <th>Catches</th>
+            </tr>
+
+            {% for weather in weather_stats %}
+
+            <tr>
+                <td>{{ weather["weather"] }}</td>
+                <td>{{ weather["count"] }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <br>
+
+    <a href="/">
+        <button>Back to home</button>
+    </a>
+</body>
 
 </html>

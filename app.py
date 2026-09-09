@@ -43,7 +43,49 @@ def home():
 
 @app.route("/statistics")
 def statistics():
-    return render_template("statistics.html")
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    #Total number of catches
+    cursor.execute("SELECT COUNT(*) AS total FROM catches")
+    total_catches = cursor.fetchone()["total"]
+
+    #Number of different species
+    cursor.execute("SELECT COUNT(DISTINCT species) AS species_count FROM catches")
+    species_count = cursor.fetchone()["average_weight"]
+
+    #Biggest fish
+    cursor.execute("""
+        SELECT *
+        FROM catches
+        WHERE weight IS NOT NULL
+        ORDER BY weight DESC
+        LIMIT 1
+    """)
+    species_stats = cursor.fetchall()
+
+    #Number of catches in each weather condition
+    cursor.execute("""
+        SELECT weather, COUNT(*) AS count
+        FROM catches
+        GROUP BY weather
+        ORDER BY count DESC
+    """)
+    weather_stats = cursor.fetchall()
+
+    connection.close()
+
+
+    return render_template(
+        "statistics.html",
+        total_catches = total_catches,
+        species_count = species_count,
+        average_weight = average_weight,
+        biggest_fish = biggest_fish,
+        species_stats = species_stats,
+        weather_stats = weather_stats
+    )
 
 
 @app.route("/log", methods=["GET", "POST"])
