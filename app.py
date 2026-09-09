@@ -56,8 +56,8 @@ def log_catch():
         location = request.form["location"]
         weather = request.form["weather"]
         species = request.form["species"]
-        weight = request.form["weight"]
-        length = request.form["length"]
+        weight = request.form["weight"] or None
+        length = request.form["length"] or None
         bait = request.form["bait"]
         notes = request.form["notes"]
 
@@ -131,8 +131,8 @@ def edit_catch(id):
         location = request.form["location"]
         weather = request.form["weather"]
         species = request.form["species"]
-        weight = request.form["weight"]
-        length = request.form["length"]
+        weight = request.form["weight"] or None
+        length = request.form["length"] or None
         bait = request.form["bait"]
         notes = request.form["notes"]
 
