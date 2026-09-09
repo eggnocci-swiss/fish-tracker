@@ -41,6 +41,10 @@ def init_db():
 def home():
     return render_template("index.html")
 
+@app.route("/statistics")
+def statistics():
+    return render_template("statistics.html")
+
 
 @app.route("/log", methods=["GET", "POST"])
 def log_catch():
