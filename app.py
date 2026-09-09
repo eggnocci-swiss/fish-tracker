@@ -1,16 +1,25 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
+import psycopg
+from psycopg.rows import dict_row
+import os
 
 app = Flask(__name__)
 
-def init_db():
-    connection = sqlite3.connect("fish.db")
 
+def get_connection():
+    return psycopg.connect(
+        os.environ["DATABASE_URL"],
+        row_factory=dict_row
+    )
+
+
+def init_db():
+    connection = get_connection()
     cursor = connection.cursor()
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS catches (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             date TEXT,
             time TEXT,
             location TEXT,
@@ -24,12 +33,14 @@ def init_db():
     """)
 
     connection.commit()
+    cursor.close()
     connection.close()
 
 
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 @app.route("/log", methods=["GET", "POST"])
 def log_catch():
@@ -46,16 +57,17 @@ def log_catch():
         bait = request.form["bait"]
         notes = request.form["notes"]
 
-        connection = sqlite3.connect("fish.db")
+        connection = get_connection()
         cursor = connection.cursor()
 
         cursor.execute("""
             INSERT INTO catches
             (date, time, location, weather, species, weight, length, bait, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (date, time, location, weather, species, weight, length, bait, notes))
 
         connection.commit()
+        cursor.close()
         connection.close()
 
         return """
@@ -72,11 +84,11 @@ def log_catch():
 
     return render_template("log.html")
 
+
 @app.route("/catches")
 def catches():
-    connection = sqlite3.connect("fish.db")
-    connection.row_factory = sqlite3.Row
 
+    connection = get_connection()
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM catches")
@@ -86,25 +98,26 @@ def catches():
 
     return render_template("catches.html", catches=catches)
 
+
 @app.route("/catches/delete/<int:id>")
 def delete_catch(id):
 
-    connection = sqlite3.connect("fish.db")
+    connection = get_connection()
     cursor = connection.cursor()
 
-    cursor.execute("DELETE FROM catches WHERE id = ?", (id,))
+    cursor.execute("DELETE FROM catches WHERE id = %s", (id,))
 
     connection.commit()
+    cursor.close()
     connection.close()
 
     return redirect("/catches")
 
+
 @app.route("/catches/edit/<int:id>", methods=["GET", "POST"])
 def edit_catch(id):
 
-    connection = sqlite3.connect("fish.db")
-    connection.row_factory = sqlite3.Row
-
+    connection = get_connection()
     cursor = connection.cursor()
 
     if request.method == "POST":
@@ -121,24 +134,27 @@ def edit_catch(id):
 
         cursor.execute("""
             UPDATE catches
-            SET date = ?, time = ?, location = ?, weather = ?,
-                species = ?, weight = ?, length = ?, bait = ?, notes = ?
-            WHERE id = ?
+            SET date = %s, time = %s, location = %s, weather = %s,
+                species = %s, weight = %s, length = %s, bait = %s, notes = %s
+            WHERE id = %s
         """, (date, time, location, weather, species, weight, length, bait, notes, id))
 
         connection.commit()
+        cursor.close()
         connection.close()
 
         return redirect("/catches")
 
-    cursor.execute("SELECT * FROM catches WHERE id = ?", (id,))
+    cursor.execute("SELECT * FROM catches WHERE id = %s", (id,))
     catch = cursor.fetchone()
 
     connection.close()
 
     return render_template("edit.html", catch=catch)
 
+
 init_db()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
