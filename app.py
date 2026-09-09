@@ -163,6 +163,10 @@ def log_catch():
             <button>Log another fish</button>
         </a>
 
+        <a href="/statistics">
+            <button>View Statistics</button>
+        </a>
+
         <a href="/">
             <button>Back to Home</button>
         </a>
