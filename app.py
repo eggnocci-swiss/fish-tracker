@@ -1,0 +1,144 @@
+from flask import Flask, render_template, request, redirect
+import sqlite3
+
+app = Flask(__name__)
+
+def init_db():
+    connection = sqlite3.connect("fish.db")
+
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS catches (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,
+            time TEXT,
+            location TEXT,
+            weather TEXT,
+            species TEXT,
+            weight REAL,
+            length REAL,
+            bait TEXT,
+            notes TEXT
+        )
+    """)
+
+    connection.commit()
+    connection.close()
+
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/log", methods=["GET", "POST"])
+def log_catch():
+
+    if request.method == "POST":
+
+        date = request.form["date"]
+        time = request.form["time"]
+        location = request.form["location"]
+        weather = request.form["weather"]
+        species = request.form["species"]
+        weight = request.form["weight"]
+        length = request.form["length"]
+        bait = request.form["bait"]
+        notes = request.form["notes"]
+
+        connection = sqlite3.connect("fish.db")
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO catches
+            (date, time, location, weather, species, weight, length, bait, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (date, time, location, weather, species, weight, length, bait, notes))
+
+        connection.commit()
+        connection.close()
+
+        return """
+        <h1>Your catch has been saved</h1>
+
+        <a href="/log">
+            <button>Log another fish</button>
+        </a>
+
+        <a href="/">
+            <button>Back to Home</button>
+        </a>
+        """
+
+    return render_template("log.html")
+
+@app.route("/catches")
+def catches():
+    connection = sqlite3.connect("fish.db")
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM catches")
+    catches = cursor.fetchall()
+
+    connection.close()
+
+    return render_template("catches.html", catches=catches)
+
+@app.route("/catches/delete/<int:id>")
+def delete_catch(id):
+
+    connection = sqlite3.connect("fish.db")
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM catches WHERE id = ?", (id,))
+
+    connection.commit()
+    connection.close()
+
+    return redirect("/catches")
+
+@app.route("/catches/edit/<int:id>", methods=["GET", "POST"])
+def edit_catch(id):
+
+    connection = sqlite3.connect("fish.db")
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    if request.method == "POST":
+
+        date = request.form["date"]
+        time = request.form["time"]
+        location = request.form["location"]
+        weather = request.form["weather"]
+        species = request.form["species"]
+        weight = request.form["weight"]
+        length = request.form["length"]
+        bait = request.form["bait"]
+        notes = request.form["notes"]
+
+        cursor.execute("""
+            UPDATE catches
+            SET date = ?, time = ?, location = ?, weather = ?,
+                species = ?, weight = ?, length = ?, bait = ?, notes = ?
+            WHERE id = ?
+        """, (date, time, location, weather, species, weight, length, bait, notes, id))
+
+        connection.commit()
+        connection.close()
+
+        return redirect("/catches")
+
+    cursor.execute("SELECT * FROM catches WHERE id = ?", (id,))
+    catch = cursor.fetchone()
+
+    connection.close()
+
+    return render_template("edit.html", catch=catch)
+
+init_db()
+
+if __name__ == "__main__":
+    app.run(debug=True)

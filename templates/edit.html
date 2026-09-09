@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit this Catch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>✏️ Edit Catch</h1>
+
+    <form method="POST">
+
+        <label>Date:</label>
+        <input type="date" name="date" value="{{ catch['date'] }}">
+
+        <br><br>
+
+        <label>Time:</label>
+        <input type="time" name="time" value="{{ catch['time'] }}">
+
+        <br><br>
+
+        <label>Location:</label>
+        <input type="text" name="location" value="{{ catch['location'] }}">
+
+        <br><br>
+
+        <label>Weather:</label>
+        <input type="text" name="weather" value="{{ catch['weather'] }}">
+
+        <br><br>
+
+        <label>Fish species:</label>
+        <input type="text" name="species" value="{{ catch['species'] }}">
+
+        <br><br>
+
+        <label>Weight (kg):</label>
+        <input type="number" step="0.01" name="weight" value="{{ catch['weight'] }}">
+
+        <br><br>
+
+        <label>Length (cm):</label>
+        <input type="number" step="0.1" name="length" value="{{ catch['length'] }}">
+
+        <br><br>
+
+        <label>Bait/Lure:</label>
+        <input type="text" name="bait" value="{{ catch['bait'] }}">
+
+        <br><br>
+
+        <label>Notes:</label>
+        <br>
+        <textarea name="notes">{{ catch['notes'] }}</textarea>
+
+        <br><br>
+
+        <button type="submit">Save Changes</button>
+
+    </form>
+
+    <br>
+
+    <a href="/catches">
+        <button>Cancel</button>
+    </a>
+
+</body>
+</html>

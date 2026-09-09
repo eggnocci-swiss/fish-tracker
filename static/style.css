@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eef7fa;
+    color: #17324d;
+}
+
+/* Homepage Header */
+
+.header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background-color: #ccecf5;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cg fill='%23b7dfea'%3E%3Cellipse cx='35' cy='30' rx='14' ry='8'/%3E%3Cpolygon points='21,30 8,20 8,40'/%3E%3Ccircle cx='40' cy='27' r='1.5' fill='%23ccecf5'/%3E%3C/g%3E%3C/svg%3E");
+
+    background-size: 120px 60px;
+
+}
+
+.header h1 {
+    font-size: 42px;
+    margin: 0;
+}
+
+.header p {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+/* Navigation */
+
+.navigation {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 0 20px;
+
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+/* Navigation Cards */
+
+.nav-card {
+    background-color: white;
+    width: 250px;
+    padding: 30px 20px;
+
+    text-align: center;
+    text-decoration: none;
+    color: #17324d;
+
+    border-radius: 12px;
+
+    border: 2px solid #b7dfea;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+}
+
+.nav-card .icon {
+    font-size: 40px;
+}
+
+.nav-card h2 {
+    margin: 15px 0 10px;
+}
+
+.nav-card p {
+    margin: 0;
+    color: #557080;
+}
+
+/* Buttons */
+
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 5px;
+}
+
+
+/* Forms */
+
+form {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+
+/* Tables */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+}

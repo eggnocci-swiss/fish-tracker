@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>This is where you can log a catch, yay!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>Log ur catch baby bear</h1>
+
+    <form method="POST" action="/log">
+
+        <label>Date:</label>
+        <input type="date" name="date">
+
+        <br><br>
+
+        <label>Time:</label>
+        <input type="time" name="time">
+
+        <br><br>
+
+        <label>Location:</label>
+        <input type="text" name="location">
+
+        <br><br>
+
+        <label>Weather:</label>
+        <input type="text" name="weather">
+
+        <br><br>
+
+        <label>Fish Species:</label>
+        <input type="text" name="species">
+
+        <br><br>
+
+        <label>Weight (kg):</label>
+        <input type="number" step="0.1" name="weight">
+
+        <br><br>
+
+        <label>Length (cm)</label>
+        <input type="number" step="0.1" name="length">
+
+        <br><br>
+
+        <label>Bait/Lure</label>
+        <input type="text" name="bait">
+
+        <br><br>
+
+        <label>Notes:</label>
+        <br>
+        <textarea name="notes"></textarea>
+
+        <br><br>
+
+        <button type="submit">Save your catch</button>
+
+    </form>
+
+    <br>
+
+    <a href="/">
+        <button>Back to home</button>
+    </a>
+
+</body>
+</html>

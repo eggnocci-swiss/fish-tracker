@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Catches</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>🐟 My Catches</h1>
+
+    <p>Here are all the fish you've caught.</p>
+
+    <table border="1">
+
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>Weather</th>
+            <th>Species</th>
+            <th>Weight (kg)</th>
+            <th>Length (cm)</th>
+            <th>Bait/Lure</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for catch in catches %}
+
+        <tr>
+            <td>{{ catch["date"] }}</td>
+            <td>{{ catch["time"] }}</td>
+            <td>{{ catch["location"] }}</td>
+            <td>{{ catch["weather"] }}</td>
+            <td>{{ catch["species"] }}</td>
+            <td>{{ catch["weight"] }}</td>
+            <td>{{ catch["length"] }}</td>
+            <td>{{ catch["bait"] }}</td>
+            <td>{{ catch["notes"] }}</td>
+
+            <td>
+                <a href="/catches/edit/{{ catch['id']}}">
+                    <button>Edit</button>
+                </a>
+
+                <a href="/catches/delete/{{ catch['id'] }}">
+                    <button>Delete</button>
+                </a>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+    <a href="/log">
+        <button>Log another catch</button>
+    </a>
+
+    <a href="/">
+        <button>Home</button>
+    </a>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+.venv/
+fish.db
+__pycache__/
